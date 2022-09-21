@@ -2,12 +2,16 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/fatih/color"
 	"github.com/google/go-github/v18/github"
@@ -24,6 +28,25 @@ import (
 	"github.com/mitchellh/golicense/module"
 )
 
+type moduleVersionLicense struct {
+	Version  string    `json:"version"`
+	License  string    `json:"license"`
+	SPDX     string    `json:"spdx"`
+	Hash     string    `json:"hash"`
+	Created  time.Time `json:"created"`
+	LastUsed time.Time `json:"used"`
+}
+type cachedModule struct {
+	Path   string                 `json:"path"`
+	VerLic []moduleVersionLicense `json:"verlic"`
+}
+
+type cacheFile struct {
+	Modules []cachedModule
+}
+
+var cacheData cacheFile = cacheFile{}
+
 const (
 	EnvGitHubToken = "GITHUB_TOKEN"
 )
@@ -37,6 +60,7 @@ func realMain() int {
 
 	var flagLicense bool
 	var flagOutXLSX string
+	var flagCache string
 	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	flags.BoolVar(&flagLicense, "license", true,
 		"look up and verify license. If false, dependencies are\n"+
@@ -45,13 +69,51 @@ func realMain() int {
 	flags.BoolVar(&termOut.Verbose, "verbose", false, "additional logging to terminal, requires -plain")
 	flags.StringVar(&flagOutXLSX, "out-xlsx", "",
 		"save report in Excel XLSX format to the given path")
-	flags.Parse(os.Args[1:])
+	flags.StringVar(&flagCache, "cache", "",
+		"read cached file from the given path")
+	err := flags.Parse(os.Args[1:])
+	if err != nil {
+		fmt.Printf("error: %s\n", err.Error())
+		printHelp(flags)
+		return 1
+	}
+
 	args := flags.Args()
 	if len(args) == 0 {
 		fmt.Fprintf(os.Stderr, color.RedString(
 			"❗️ Path to file to analyze expected.\n\n"))
 		printHelp(flags)
 		return 1
+	}
+	var cacheDataLookup map[string]cachedModule
+
+	if flagCache != "" {
+
+		jsonFile, err := os.Open(flagCache)
+		// if we os.Open returns an error then handle it
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Printf("Successfully Opened: %s", flagCache)
+		// defer the closing of our jsonFile so that we can parse it later on
+		defer jsonFile.Close()
+
+		// read our opened jsonFile as a byte array.
+		byteValue, _ := ioutil.ReadAll(jsonFile)
+
+		// we unmarshal our byteArray which contains our
+		// jsonFile's content into 'users' which we defined above
+		err = json.Unmarshal(byteValue, &cacheData)
+		if err != nil {
+			fmt.Printf("error: %s\n", err.Error())
+			return 1
+		}
+
+		cacheDataLookup = map[string]cachedModule{}
+
+		for _, cc := range cacheData.Modules {
+			cacheDataLookup[cc.Path] = cc
+		}
 	}
 
 	// Determine the exe path and parse the configuration if given.
@@ -155,6 +217,7 @@ func realMain() int {
 	// Kick off all the license lookups.
 	var wg sync.WaitGroup
 	sem := NewSemaphore(5)
+	count := 0
 	for _, m := range mods {
 		wg.Add(1)
 		go func(m module.Module) {
@@ -169,19 +232,91 @@ func realMain() int {
 
 			// Lookup
 			out.Start(&m)
+			var lic *license.License
+			var err error
+			if flagCache != "" {
 
-			// We first try the untranslated version. If we can detect
-			// a license then take that. Otherwise, we translate.
-			lic, err := license.Find(ctx, m, fs)
-			if lic == nil || err != nil {
-				lic, err = license.Find(ctx, license.Translate(ctx, m, ts), fs)
+				found := false
+				index := 0
+				cca, ok := cacheDataLookup[m.Path]
+				if ok {
+					for vvk, vv := range cca.VerLic {
+						if vv.Version == m.Version {
+							if vv.Hash != m.Hash {
+								os.Exit(1)
+							}
+							found = true
+							index = vvk
+						}
+					}
+				}
+				if ok && found {
+					ccc := cacheDataLookup[m.Path]
+					ccc.VerLic[index].LastUsed = time.Now()
+					lic = &license.License{Name: cca.VerLic[index].License, SPDX: cca.VerLic[index].SPDX}
+					cacheDataLookup[m.Path] = ccc
+				} else {
+					count++
+					// We first try the untranslated version. If we can detect
+					// a license then take that. Otherwise, we translate.
+					lic, err = license.Find(ctx, m, fs)
+					if lic == nil || err != nil {
+						lic, err = license.Find(ctx, license.Translate(ctx, m, ts), fs)
+					}
+
+					if lic != nil && err != nil {
+						c2, ok2 := cacheDataLookup[m.Path]
+
+						var newVerLic moduleVersionLicense
+						newVerLic.Version = m.Version
+						newVerLic.License = lic.Name
+						newVerLic.SPDX = lic.SPDX
+						newVerLic.Hash = m.Hash
+						newVerLic.Created = time.Now()
+						newVerLic.LastUsed = time.Now()
+
+						if ok2 {
+							c2.VerLic = append(c2.VerLic, newVerLic)
+						} else {
+							var newMod cachedModule
+							newMod.Path = m.Path
+							newMod.VerLic = append(newMod.VerLic, newVerLic)
+
+							cacheData.Modules = append(cacheData.Modules, newMod)
+						}
+					}
+				}
+			} else {
+				count++
+				// We first try the untranslated version. If we can detect
+				// a license then take that. Otherwise, we translate.
+				lic, err = license.Find(ctx, m, fs)
+				if lic == nil || err != nil {
+					lic, err = license.Find(ctx, license.Translate(ctx, m, ts), fs)
+				}
 			}
 			out.Finish(&m, lic, err)
 		}(m)
+
+		if count > 5 {
+			break
+		}
 	}
 
 	// Wait for all lookups to complete
 	wg.Wait()
+
+	if flagCache != "" {
+
+		content, err := json.Marshal(cacheData)
+		if err != nil {
+			fmt.Println(err)
+		}
+		err = ioutil.WriteFile(flagCache, content, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 
 	// Close the output
 	if err := out.Close(); err != nil {

@@ -1,5 +1,11 @@
 # golicense - Go Binary OSS License Scanner
 
+This is a fork of https://github.com/mitchellh/golicense
+Initially inteded for experimenting with a local file containing information 
+from previous executions. Most modules are the same from build to build.
+The github limiting is quite annoying and prevents regression builds that traps
+licence or module changes.
+
 golicense is a tool that scans [compiled Go binaries](https://golang.org/)
 and can output all the dependencies, their versions, and their respective
 licenses (if known). golicense only works with Go binaries compiled using
