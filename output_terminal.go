@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"os"
 	"sort"
 	"strings"
 	"sync"
@@ -76,8 +77,8 @@ func (o *TermOutput) Update(m *module.Module, t license.StatusType, msg string) 
 	// In plain & verbose mode, we output every status message, but in normal
 	// plain mode we ignore all status updates.
 	if o.Plain && o.Verbose {
-		fmt.Fprintf(o.Out, fmt.Sprintf(
-			"%s %s\n", o.paddedModule(m), msg))
+		fmt.Fprintf(o.Out,
+			"%s %s\n", o.paddedModule(m), msg)
 	}
 
 	if o.Plain {
@@ -136,8 +137,8 @@ func (o *TermOutput) Finish(m *module.Module, l *license.License, err error) {
 	}
 
 	if o.Plain {
-		fmt.Fprintf(o.Out, fmt.Sprintf(
-			"%s %s\n", o.paddedModule(m), l.String()))
+		fmt.Fprintf(o.Out,
+			"%s %s\n", o.paddedModule(m), l.String())
 		return
 	}
 
@@ -145,8 +146,12 @@ func (o *TermOutput) Finish(m *module.Module, l *license.License, err error) {
 	defer o.lock.Unlock()
 	delete(o.modules, m.Path)
 	o.pauseLive(func() {
-		o.live.Write([]byte(colorFunc(
+		_, err := o.live.Write([]byte(colorFunc(
 			"%s%s %s\n", icon, o.paddedModule(m), l.String())))
+		if err != nil {
+			fmt.Println("failed write")
+			os.Exit(1)
+		}
 	})
 }
 
@@ -178,7 +183,11 @@ func (o *TermOutput) paddedModule(m *module.Module) string {
 //
 // lock must be held.
 func (o *TermOutput) pauseLive(f func()) {
-	o.live.Write([]byte(strings.Repeat(" ", o.lineMax) + "\n"))
+	_, err := o.live.Write([]byte(strings.Repeat(" ", o.lineMax) + "\n"))
+	if err != nil {
+		fmt.Println("failed write")
+		os.Exit(1)
+	}
 	o.live.Flush()
 	f()
 	o.live.Flush()
@@ -206,7 +215,12 @@ func (o *TermOutput) updateLiveOutput() {
 		buf.WriteString(o.modules[k] + strings.Repeat(" ", o.lineMax-len(o.modules[k])) + "\n")
 	}
 
-	o.live.Write(buf.Bytes())
+	_, err := o.live.Write(buf.Bytes())
+	if err != nil {
+		fmt.Println("failed write")
+		os.Exit(1)
+	}
+
 	o.live.Flush()
 }
 

@@ -46,6 +46,7 @@ type cacheFile struct {
 }
 
 var cacheData cacheFile = cacheFile{}
+var cacheDataLookup map[string]cachedModule
 
 const (
 	EnvGitHubToken = "GITHUB_TOKEN"
@@ -53,6 +54,35 @@ const (
 
 func main() {
 	os.Exit(realMain())
+}
+
+func readFile(fn string) {
+
+	jsonFile, err := os.Open(fn)
+	// if we os.Open returns an error then handle it
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("Successfully Opened: %s\n", fn)
+	// defer the closing of our jsonFile so that we can parse it later on
+	defer jsonFile.Close()
+
+	// read our opened jsonFile as a byte array.
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	// we unmarshal our byteArray which contains our
+	// jsonFile's content into 'users' which we defined above
+	err = json.Unmarshal(byteValue, &cacheData)
+	if err != nil {
+		fmt.Printf("error: %s\n", err.Error())
+		fmt.Printf("No file found, will attempt to create new \n")
+	}
+
+	cacheDataLookup = map[string]cachedModule{}
+
+	for _, cc := range cacheData.Modules {
+		cacheDataLookup[cc.Path] = cc
+	}
 }
 
 func realMain() int {
@@ -80,40 +110,14 @@ func realMain() int {
 
 	args := flags.Args()
 	if len(args) == 0 {
-		fmt.Fprintf(os.Stderr, color.RedString(
+		fmt.Fprint(os.Stderr, color.RedString(
 			"❗️ Path to file to analyze expected.\n\n"))
 		printHelp(flags)
 		return 1
 	}
-	var cacheDataLookup map[string]cachedModule
 
 	if flagCache != "" {
-
-		jsonFile, err := os.Open(flagCache)
-		// if we os.Open returns an error then handle it
-		if err != nil {
-			fmt.Println(err)
-		}
-		fmt.Printf("Successfully Opened: %s\n", flagCache)
-		// defer the closing of our jsonFile so that we can parse it later on
-		defer jsonFile.Close()
-
-		// read our opened jsonFile as a byte array.
-		byteValue, _ := ioutil.ReadAll(jsonFile)
-
-		// we unmarshal our byteArray which contains our
-		// jsonFile's content into 'users' which we defined above
-		err = json.Unmarshal(byteValue, &cacheData)
-		if err != nil {
-			fmt.Printf("error: %s\n", err.Error())
-			fmt.Printf("No file found, will attempt to create new \n")
-		}
-
-		cacheDataLookup = map[string]cachedModule{}
-
-		for _, cc := range cacheData.Modules {
-			cacheDataLookup[cc.Path] = cc
-		}
+		readFile(flagCache)
 	}
 
 	// Determine the exe path and parse the configuration if given.
@@ -124,7 +128,7 @@ func realMain() int {
 
 		c, err := config.ParseFile(args[0])
 		if err != nil {
-			fmt.Fprintf(os.Stderr, color.RedString(fmt.Sprintf(
+			fmt.Fprint(os.Stderr, color.RedString(fmt.Sprintf(
 				"❗️ Error parsing configuration:\n\n%s\n", err)))
 			return 1
 		}
@@ -138,7 +142,7 @@ func realMain() int {
 		// Read the dependencies from the binary itself
 		vsn, err := version.ReadExe(exePath)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, color.RedString(fmt.Sprintf(
+			fmt.Fprint(os.Stderr, color.RedString(fmt.Sprintf(
 				"❗️ Error reading %q: %s\n", args[0], err)))
 			return 1
 		}
@@ -147,7 +151,7 @@ func realMain() int {
 			// ModuleInfo empty means that the binary didn't use Go modules
 			// or it could mean that a binary has no dependencies. Either way
 			// we error since we can't be sure.
-			fmt.Fprintf(os.Stderr, color.YellowString(fmt.Sprintf(
+			fmt.Fprint(os.Stderr, color.YellowString(fmt.Sprintf(
 				"⚠️  %q ⚠️\n\n"+
 					"This executable was compiled without using Go modules or has \n"+
 					"zero dependencies. golicense considers this an error (exit code 1).\n", exePath)))
@@ -158,7 +162,7 @@ func realMain() int {
 		// into structured data with the module information.
 		mods, err := module.ParseExeData(vsn.ModuleInfo)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, color.RedString(fmt.Sprintf(
+			fmt.Fprint(os.Stderr, color.RedString(fmt.Sprintf(
 				"❗️ Error parsing dependencies: %s\n", err)))
 			return 1
 		}
@@ -229,7 +233,7 @@ func realMain() int {
 			defer sem.Release()
 
 			// Build the context
-			ctx := license.StatusWithContext(ctx, StatusListener(out, &m))
+			ctx = license.StatusWithContext(ctx, StatusListener(out, &m))
 
 			// Lookup
 			out.Start(&m)
@@ -321,7 +325,7 @@ func realMain() int {
 
 	// Close the output
 	if err := out.Close(); err != nil {
-		fmt.Fprintf(os.Stderr, color.RedString(fmt.Sprintf(
+		fmt.Fprint(os.Stderr, color.RedString(fmt.Sprintf(
 			"❗️ Error: %s\n", err)))
 		return 1
 	}
@@ -330,7 +334,7 @@ func realMain() int {
 }
 
 func printHelp(fs *flag.FlagSet) {
-	fmt.Fprintf(os.Stderr, strings.TrimSpace(help)+"\n\n", os.Args[0])
+	fmt.Fprint(os.Stderr, strings.TrimSpace(help)+"\n\n", os.Args[0])
 	fs.PrintDefaults()
 }
 
