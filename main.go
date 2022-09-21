@@ -29,16 +29,16 @@ import (
 )
 
 type moduleVersionLicense struct {
-	Version  string    `json:"version"`
-	License  string    `json:"license"`
-	SPDX     string    `json:"spdx"`
-	Hash     string    `json:"hash"`
-	Created  time.Time `json:"created"`
-	LastUsed time.Time `json:"used"`
+	Version  string    `json:"version,omitempty"`
+	License  string    `json:"license,omitempty"`
+	SPDX     string    `json:"spdx,omitempty"`
+	Hash     string    `json:"hash,omitempty"`
+	Created  time.Time `json:"created,omitempty"`
+	LastUsed time.Time `json:"used,omitempty"`
 }
 type cachedModule struct {
-	Path   string                 `json:"path"`
-	VerLic []moduleVersionLicense `json:"verlic"`
+	Path   string                 `json:"path,omitempty"`
+	VerLic []moduleVersionLicense `json:"verlic,omitempty"`
 }
 
 type cacheFile struct {
@@ -94,7 +94,7 @@ func realMain() int {
 		if err != nil {
 			fmt.Println(err)
 		}
-		fmt.Printf("Successfully Opened: %s", flagCache)
+		fmt.Printf("Successfully Opened: %s\n", flagCache)
 		// defer the closing of our jsonFile so that we can parse it later on
 		defer jsonFile.Close()
 
@@ -106,7 +106,7 @@ func realMain() int {
 		err = json.Unmarshal(byteValue, &cacheData)
 		if err != nil {
 			fmt.Printf("error: %s\n", err.Error())
-			return 1
+			fmt.Printf("No file found, will attempt to create new \n")
 		}
 
 		cacheDataLookup = map[string]cachedModule{}
@@ -219,6 +219,7 @@ func realMain() int {
 	sem := NewSemaphore(5)
 	count := 0
 	for _, m := range mods {
+		count++
 		wg.Add(1)
 		go func(m module.Module) {
 			defer wg.Done()

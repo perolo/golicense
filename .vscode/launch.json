@@ -12,7 +12,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "${fileDirname}",
-            "args": ["--cache", "test.json", "/home/perolo/go/src/github.com/AiflooAB/cloud-engine/cmd/watson/watson"],            
+            "args": ["--cache", "test.json", "golicense"],            
         }
     ]
 }

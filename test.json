@@ -1,0 +1,277 @@
+{
+    "Modules": [
+        {
+            "path": "golang.org/x/exp",
+            "verlic": [
+                {
+                    "version": "v0.0.0-20190312203227-4b39c73a6495",
+                    "license": "BSD 3-Clause \"New\" or \"Revised\" License",
+                    "spdx": "BSD-3-Clause",
+                    "hash": "h1:I6A9Ag9FpEKOjcKrRNjQkPHawoXIhKyTGfvvjFAiiAk=",
+                    "created": "2022-09-19T19:17:08.445156194+02:00",
+                    "used": "2022-09-20T20:32:41.267716867+02:00"
+                }
+            ]
+        },
+        {
+            "path": "github.com/hashicorp/hcl2",
+            "verlic": [
+                {
+                    "version": "v0.0.0-20181111172936-0467c0c38ca2",
+                    "license": "Mozilla Public License 2.0",
+                    "spdx": "MPL-2.0",
+                    "hash": "h1:uNBHbPmzVQJHlOPwdj/2Ssi9WMXBYaPfaq5pylaJJuQ=",
+                    "created": "2022-09-19T19:32:18.09026941+02:00",
+                    "used": "2022-09-20T20:19:38.729344085+02:00"
+                }
+            ]
+        },
+        {
+            "path": "github.com/mattn/go-colorable",
+            "verlic": [
+                {
+                    "version": "v0.0.9",
+                    "license": "MIT License",
+                    "spdx": "MIT",
+                    "hash": "h1:UVL0vNpWh04HeJXV0KLcaT7r06gOH2l4OW6ddYRUIY4=",
+                    "created": "2022-09-19T19:34:48.143475406+02:00",
+                    "used": "2022-09-20T20:19:38.438609688+02:00"
+                }
+            ]
+        },
+        {
+            "path": "github.com/agext/levenshtein",
+            "verlic": [
+                {
+                    "version": "v1.2.1",
+                    "license": "Apache License 2.0",
+                    "spdx": "Apache-2.0",
+                    "hash": "h1:QmvMAjj2aEICytGiWzmxoE0x2KZvE0fvmqMOfy2tjT8=",
+                    "created": "2022-09-19T19:35:53.734490649+02:00",
+                    "used": "2022-09-20T20:19:38.725762116+02:00"
+                }
+            ]
+        },
+        {
+            "path": "github.com/hashicorp/go-multierror",
+            "verlic": [
+                {
+                    "version": "v1.0.0",
+                    "license": "Mozilla Public License 2.0",
+                    "spdx": "MPL-2.0",
+                    "hash": "h1:iVjPR7a6H0tWELX5NxNe7bYopibicUzc7uPribsnS6o=",
+                    "created": "2022-09-19T19:36:36.655946024+02:00",
+                    "used": "2022-09-20T20:19:38.729331042+02:00"
+                }
+            ]
+        },
+        {
+            "path": "github.com/hashicorp/errwrap",
+            "verlic": [
+                {
+                    "version": "v1.0.0",
+                    "license": "Mozilla Public License 2.0",
+                    "spdx": "MPL-2.0",
+                    "hash": "h1:hLrqtEDnRye3+sgx6z4qVLNuviH3MR5aQ0ykNJa/UYA=",
+                    "created": "2022-09-19T19:37:09.744421216+02:00",
+                    "used": "2022-09-20T20:32:40.238057907+02:00"
+                }
+            ]
+        },
+        {
+            "path": "github.com/emirpasic/gods",
+            "verlic": [
+                {
+                    "version": "v1.12.0",
+                    "license": "BSD 2-Clause \"Simplified\" License",
+                    "spdx": "BSD-2-Clause",
+                    "hash": "h1:QAUIPSaCu4G+POclxeqb3F+WPpdKqFGlw36+yOzGlrg=",
+                    "created": "2022-09-19T19:37:41.898365251+02:00",
+                    "used": "2022-09-20T20:19:38.899872428+02:00"
+                }
+            ]
+        },
+        {
+            "path": "github.com/jbenet/go-context",
+            "verlic": [
+                {
+                    "version": "v0.0.0-20150711004518-d14ea06fba99",
+                    "license": "MIT License",
+                    "spdx": "MIT",
+                    "hash": "h1:BQSFePA1RWJOlocH6Fxy8MmwDt+yVQYULKfN0RoTN8A=",
+                    "created": "2022-09-19T19:38:35.270645738+02:00",
+                    "used": "2022-09-20T20:32:40.238067302+02:00"
+                }
+            ]
+        },
+        {
+            "path": "github.com/google/go-cmp",
+            "verlic": [
+                {
+                    "version": "v0.2.0",
+                    "license": "BSD 3-Clause \"New\" or \"Revised\" License",
+                    "spdx": "BSD-3-Clause",
+                    "hash": "h1:+dTQ8DZQJz0Mb/HjFlkptS1FeQ4cWSnN941F8aEG4SQ=",
+                    "created": "2022-09-20T20:05:14.499099538+02:00",
+                    "used": "2022-09-20T20:32:41.474290346+02:00"
+                }
+            ]
+        },
+        {
+            "path": "github.com/zclconf/go-cty",
+            "verlic": [
+                {
+                    "version": "v0.0.0-20180815031001-58bb2bc0302a",
+                    "license": "MIT License",
+                    "spdx": "MIT",
+                    "hash": "h1:x70ZZ4caA8eY4abjpcCnf6uvIPY3cpgRFrXE47JF4Sc=",
+                    "created": "2022-09-20T20:05:17.698294526+02:00",
+                    "used": "2022-09-20T20:32:40.41319781+02:00"
+                }
+            ]
+        },
+        {
+            "path": "github.com/shurcooL/sanitized_anchor_name",
+            "verlic": [
+                {
+                    "version": "v0.0.0-20170918181015-86672fcb3f95",
+                    "license": "MIT License",
+                    "spdx": "MIT",
+                    "hash": "h1:/vdW8Cb7EXrkqWGufVMES1OH2sU9gKVb2n9/1y5NMBY=",
+                    "created": "2022-09-20T20:05:17.698171028+02:00",
+                    "used": "2022-09-20T20:19:38.72574737+02:00"
+                }
+            ]
+        },
+        {
+            "path": "github.com/google/go-querystring",
+            "verlic": [
+                {
+                    "version": "v1.0.0",
+                    "license": "BSD 3-Clause \"New\" or \"Revised\" License",
+                    "spdx": "BSD-3-Clause",
+                    "hash": "h1:Xkwi/a1rcvNg1PPYe5vI8GbeBY/jrVuDX5ASuANWTrk=",
+                    "created": "2022-09-20T20:05:18.527968957+02:00",
+                    "used": "2022-09-20T20:19:38.4383542+02:00"
+                }
+            ]
+        },
+        {
+            "path": "github.com/mitchellh/go-wordwrap",
+            "verlic": [
+                {
+                    "version": "v0.0.0-20150314170334-ad45545899c7",
+                    "license": "MIT License",
+                    "spdx": "MIT",
+                    "hash": "h1:DpOJ2HYzCv8LZP15IdmG+YdwD2luVPHITV96TkirNBM=",
+                    "created": "2022-09-20T20:05:19.236529589+02:00",
+                    "used": "2022-09-20T20:32:41.590438141+02:00"
+                }
+            ]
+        },
+        {
+            "path": "gopkg.in/src-d/go-license-detector.v2",
+            "verlic": [
+                {
+                    "version": "v2.0.0-20180510072912-da552ecf050b",
+                    "license": "Apache License 2.0",
+                    "spdx": "Apache-2.0",
+                    "hash": "h1:rmf1qjKdqRRm2SAc7eCLCklq+2BM4spdlykM3CVmVUc=",
+                    "created": "2022-09-20T20:05:25.334674554+02:00",
+                    "used": "2022-09-20T20:19:38.729339283+02:00"
+                }
+            ]
+        },
+        {
+            "path": "golang.org/x/sys",
+            "verlic": [
+                {
+                    "version": "v0.0.0-20190312061237-fead79001313",
+                    "license": "BSD 3-Clause \"New\" or \"Revised\" License",
+                    "spdx": "BSD-3-Clause",
+                    "hash": "h1:pczuHS43Cp2ktBEEmLwScxgjWsBSzdaQiKzUyf3DTTc=",
+                    "created": "2022-09-20T20:07:54.492270306+02:00",
+                    "used": "2022-09-20T20:32:40.238082883+02:00"
+                }
+            ]
+        },
+        {
+            "path": "github.com/fatih/color",
+            "verlic": [
+                {
+                    "version": "v1.7.0",
+                    "license": "MIT License",
+                    "spdx": "MIT",
+                    "hash": "h1:DkWD4oS2D8LGGgTQ6IvwJJXSL5Vp2ffcQg58nFV38Ys=",
+                    "created": "2022-09-20T20:07:54.492075726+02:00",
+                    "used": "2022-09-20T20:19:38.438148717+02:00"
+                }
+            ]
+        },
+        {
+            "path": "github.com/360EntSecGroup-Skylar/excelize",
+            "verlic": [
+                {
+                    "version": "v1.4.0",
+                    "license": "BSD 3-Clause \"New\" or \"Revised\" License",
+                    "spdx": "BSD-3-Clause",
+                    "hash": "h1:43rak9uafmwSJpXfFO1heKQph8tP3nlfWJWFQQtW1R0=",
+                    "created": "2022-09-20T20:07:55.539186315+02:00",
+                    "used": "2022-09-20T20:19:38.438672926+02:00"
+                }
+            ]
+        },
+        {
+            "path": "gopkg.in/src-d/go-git.v4",
+            "verlic": [
+                {
+                    "version": "v4.7.0",
+                    "license": "Apache License 2.0",
+                    "spdx": "Apache-2.0",
+                    "hash": "h1:WXB+2gCoRhQiAr//IMHpIpoDsTrDgvjDORxt57e8XTA=",
+                    "created": "2022-09-20T20:07:56.96884019+02:00",
+                    "used": "2022-09-20T20:19:38.735652831+02:00"
+                }
+            ]
+        },
+        {
+            "path": "github.com/hhatto/gorst",
+            "verlic": [
+                {
+                    "version": "v0.0.0-20181029133204-ca9f730cac5b",
+                    "license": "MIT License",
+                    "spdx": "MIT",
+                    "hash": "h1:Jdu2tbAxkRouSILp2EbposIb8h4gO+2QuZEn3d9sKAc=",
+                    "created": "2022-09-20T20:08:03.211190029+02:00",
+                    "used": "2022-09-20T20:32:40.69427933+02:00"
+                }
+            ]
+        },
+        {
+            "path": "github.com/xanzy/ssh-agent",
+            "verlic": [
+                {
+                    "version": "v0.2.0",
+                    "license": "Apache License 2.0",
+                    "spdx": "Apache-2.0",
+                    "hash": "h1:Adglfbi5p9Z0BmK2oKU9nTG+zKfniSfnaMYB+ULd+Ro=",
+                    "created": "2022-09-20T20:14:57.956977551+02:00",
+                    "used": "2022-09-20T20:32:40.932974617+02:00"
+                }
+            ]
+        },
+        {
+            "path": "gopkg.in/src-d/go-billy-siva.v4",
+            "verlic": [
+                {
+                    "version": "v4.2.2",
+                    "license": "Apache License 2.0",
+                    "spdx": "Apache-2.0",
+                    "hash": "h1:HvklDMblrg/Zknu4tAFJayg34QUOvuojXjMQGqA2FtM=",
+                    "created": "2022-09-20T20:15:01.77675758+02:00",
+                    "used": "2022-09-20T20:32:40.238074979+02:00"
+                }
+            ]
+        }
+    ]
+}
