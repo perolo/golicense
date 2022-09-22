@@ -269,7 +269,7 @@ func realMain() int {
 						lic, err = license.Find(ctx, license.Translate(ctx, m, ts), fs)
 					}
 
-					if lic != nil && err != nil {
+					if lic != nil && err == nil {
 						c2, ok2 := cacheDataLookup[m.Path]
 
 						var newVerLic moduleVersionLicense
