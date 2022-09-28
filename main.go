@@ -47,6 +47,7 @@ type cacheFile struct {
 
 var cacheData cacheFile = cacheFile{}
 var cacheDataLookup map[string]cachedModule
+var skipFiles []string = []string{}
 
 const (
 	EnvGitHubToken = "GITHUB_TOKEN"
@@ -91,6 +92,7 @@ func realMain() int {
 	var flagLicense bool
 	var flagOutXLSX string
 	var flagCache string
+	var skip string
 	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	flags.BoolVar(&flagLicense, "license", true,
 		"look up and verify license. If false, dependencies are\n"+
@@ -101,6 +103,8 @@ func realMain() int {
 		"save report in Excel XLSX format to the given path")
 	flags.StringVar(&flagCache, "cache", "",
 		"read cached file from the given path")
+	flags.StringVar(&skip, "skip", "",
+		"skip all modules that contains these names (comma separated)")
 	err := flags.Parse(os.Args[1:])
 	if err != nil {
 		fmt.Printf("error: %s\n", err.Error())
@@ -118,6 +122,9 @@ func realMain() int {
 
 	if flagCache != "" {
 		readFile(flagCache)
+	}
+	if skip != "" {
+		skipFiles = strings.Split(skip, ",")
 	}
 
 	// Determine the exe path and parse the configuration if given.
@@ -173,7 +180,18 @@ func realMain() int {
 
 	mods := make([]module.Module, 0, len(allMods))
 	for mod := range allMods {
-		mods = append(mods, mod)
+		skipthis := false
+		if skip != "" {
+			for _, s := range skipFiles {
+				if strings.Contains(mod.String(), s) {
+					fmt.Printf("Skipping module: %s \n", mod.String())
+					skipthis = true
+				}
+			}
+		}
+		if !skipthis {
+			mods = append(mods, mod)
+		}
 	}
 
 	// Complete terminal output setup
@@ -302,10 +320,10 @@ func realMain() int {
 			}
 			out.Finish(&m, lic, err)
 		}(m)
-
-		if count > 5 {
-			break
-		}
+		/*
+			if count > 100 {
+				break
+			}*/
 	}
 
 	// Wait for all lookups to complete
